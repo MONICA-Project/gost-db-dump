@@ -1,0 +1,29 @@
+version: '3.3'
+services:
+
+  gost-db-dump:
+    image: "postgres:10"
+    volumes:
+      - "./dumps:/monica/dumps"
+      - "./dump_gost_db.sh:/monica/dump_gost_db.sh"
+    environment:
+      - GOST_DB_HOST=<hostname>
+      - GOST_DB_PORT=5432
+      - GOST_DB=<db_name>
+      - GOST_DB_USER=<username>
+      - GOST_DB_PASSWORD=<password>
+    command: ["/monica/dump_gost_db.sh"]
+
+  gost-db:
+    image: "geodan/gost-db"
+    ports:
+      - 5432:5432     
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - "./dumps:/monica/dumps"
+      - "./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
+    environment:
+      - POSTGRES_DB=gost
+
+volumes:
+  pgdata:
