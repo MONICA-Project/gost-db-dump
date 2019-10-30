@@ -25,5 +25,33 @@ services:
     environment:
       - POSTGRES_DB=gost
 
+  mosquitto:
+    image: "eclipse-mosquitto"
+    ports:
+      - 1883:1883
+
+  gost:
+    image: geodan/gost
+    depends_on:
+      - gost-db
+      - mosquitto
+    environment:
+      GOST_DB_HOST: gost-db
+      GOST_SERVER_EXTERNAL_URI: http://localhost:8080/
+      GOST_MQTT_HOST: mosquitto
+      GOST_MQTT_PORT: 1883
+      GOST_MQTT_CLIENTID: gost
+      GOST_MQTT_PREFIX: GOST
+      GOST_SERVER_MAX_ENTITIES: 1000
+      GOST_LOG_VERBOSE_FLAG: "true"
+      GOST_MQTT_VERBOSE: "true"
+
+  gost-dashboard:
+    image: geodan/gost-dashboard
+    ports:
+      - "8080:8080"
+    depends_on:
+      - gost
+
 volumes:
   pgdata:
