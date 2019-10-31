@@ -23,7 +23,7 @@ docker-compose up -d gost-db
 This will run the script `./docker-entrypoint-initdb.d/import.sh` that imports the dump file `./dumps/gost.sql` created in the first step into a fresh database named `gost`. Note that this will only run as long as your Docker volume `pgdata` is empty. So if the process fails at some point and you want to repeat the import you might have to remove the volume before, e.g.:
 
 ```bash
-volume rm gostdbdump_pgdata
+docker volume rm gostdbdump_pgdata
 ```
 
 After the import was successful, you can start a Gost server instance with a Mosquitto and the Gost Dashboard:
